@@ -1,0 +1,22 @@
+<div class="game">
+    <div class="game-controls">
+        <button mat-stroked-button>Clear</button>
+        <button mat-stroked-button (click)="toggleGameState()">
+            {{gameState === 'Running' ? 'Pause' : 'Resume'}}
+        </button>
+        <button mat-stroked-button>Exit</button>
+    </div>
+    <div class="game-grid">
+        <game-grid [rows]="6"
+                   [cols]="6"
+                   [borderSizePx]="4"
+                   [cellSizePx]="70"/>
+    </div>
+    <div class="statistics">
+        <scoreboard [moves]="15"
+                    [backwardMoves]="30"
+                    [gameStateChange]="gameStateEmitter.asObservable()"/>
+    </div>
+</div>
+
+

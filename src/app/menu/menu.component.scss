@@ -1,0 +1,18 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 640px;
+  height: 480px;
+  border: black solid 3px;
+}
+
+.difficulty-option {
+  flex-grow: 4;
+}
+
+.options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}

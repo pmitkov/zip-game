@@ -11,6 +11,25 @@ export class RandomService {
     return Math.floor(Math.random() * (max - min) + min);
   }
 
+  randomSubset(setSize: number, subsetSize: number): number[] {
+    const indexes: number[] = [];
+    for (let i = 0; i < setSize; i++) {
+      if (i < subsetSize) {
+        indexes.push(1);
+      } else {
+        indexes.push(0);
+      }
+    }
+    this.shuffleArray(indexes);
+    const subsetIndexes: number[] = [];
+    for (let i = 0; i < setSize; i++) {
+      if (indexes[i] === 1) {
+        subsetIndexes.push(i);
+      }
+    }
+    return subsetIndexes;
+  }
+
   shuffleArray(arr: any) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));

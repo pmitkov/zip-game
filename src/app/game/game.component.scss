@@ -1,0 +1,10 @@
+.game {
+  display: flex;
+  flex-direction: column;
+}
+
+.game-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

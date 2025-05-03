@@ -2,6 +2,7 @@ export type Difficulty = {
   size: string;
   rows: number;
   cols: number;
+  nodes: number;
 };
 export type Cell = Readonly<{row: number, col: number}>;
 export type Direction = 'Left' | 'Right' | 'Up' | 'Down';
@@ -14,4 +15,11 @@ export type StopWatchData = {
   startTime: number;
   endTime?: number;
   accumulatedTime: number;
+}
+export type GameState = 'Paused' | 'Running';
+export type StopWatchState = 'Paused' | 'Running';
+export type ApplicationState = 'Menu' | 'Game';
+export type MenuOptions = {
+  difficulty: Difficulty;
+
 }

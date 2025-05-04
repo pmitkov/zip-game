@@ -6,14 +6,14 @@
               <div class="difficulty-option">
                   <mat-form-field appearance="fill" class="full-width">
                       <mat-label>Select Difficulty</mat-label>
-                      <mat-select formControlName="select">
+                      <mat-select formControlName="difficulty">
                           <mat-option *ngFor="let difficulty of difficulties" [value]="difficulty">
                               {{ difficulty.size }}
                           </mat-option>
                       </mat-select>
                   </mat-form-field>
               </div>
-              <mat-checkbox formControlName="checkbox">Enable Walls</mat-checkbox>
+              <mat-checkbox formControlName="enableWalls">Enable Walls</mat-checkbox>
           </div>
           <button mat-raised-button color="primary" type="submit">Start Game</button>
       </form>

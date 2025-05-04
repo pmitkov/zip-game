@@ -10,7 +10,9 @@
         <game-grid [rows]="6"
                    [cols]="6"
                    [borderSizePx]="4"
-                   [cellSizePx]="70"/>
+                   [cellSizePx]="70"
+                   [selectedCells]="selectedCells"
+                   [currentPath]="currentPathEmitter.asObservable()"/>
     </div>
     <div class="statistics">
         <scoreboard [moves]="15"

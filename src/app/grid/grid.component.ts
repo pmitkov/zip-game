@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { Cell, Difficulty } from '../types';
-import { Direction } from '@angular/cdk/bidi';
+import { Cell, Coordinates, Difficulty, Direction, Path } from '../types';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'game-grid',
@@ -17,6 +17,10 @@ export class GridComponent implements AfterViewInit {
   cellSizePx!: number;
   @Input({required: true})
   borderSizePx!: number;
+  @Input({required: true})
+  selectedCells!: Cell[];
+  @Input({required: true})
+  currentPath!: Observable<Path>;
 
   private height!: number;
   private width!: number;
@@ -35,13 +39,19 @@ export class GridComponent implements AfterViewInit {
     canvas.height = this.height;
     canvas.width = this.width;
     this.ctx = canvas.getContext('2d')!;
+    this.ctx.font = "25px Arial";
     this.drawGrid();
+    this.drawSelectedCells();
+    this.highlightCell(this.selectedCells[0]);
+    this.currentPath.subscribe(path => {
+      this.drawPath(path);
+    })
   }
 
-  drawGrid() {
-    console.log('drawGrid');
-    this.ctx.clearRect(0, 0, this.width, this.height);
-    this.ctx.strokeStyle = '#050505';
+  private drawGrid() {
+    this.ctx.fillStyle = '#cecece';
+    this.ctx.fillRect(0, 0, this.width, this.height);
+    this.ctx.strokeStyle = '#444242';
     this.ctx.lineWidth = this.borderSizePx;
     // draw rows
     for (let i = 0; i <= this.rows; i++) {
@@ -59,11 +69,96 @@ export class GridComponent implements AfterViewInit {
     }
   }
 
-  highlightCell(cell: Cell) {
-
+  private highlightCell(cell: Cell) {
+    this.ctx.globalAlpha = 0.3;
+    this.ctx.fillStyle = '#68a83f';
+    const coordinates = this.getCoordinates(cell);
+    this.ctx.fillRect(coordinates[0], coordinates[1], this.cellSizePx, this.cellSizePx);
+    this.ctx.globalAlpha = 1;
   }
 
-  drawBody(cell: Cell, incomingDirection: Direction | null, outgoingDirection: Direction | null) {
+  private highlightCellCenter(cell: Cell) {
+    this.ctx.fillStyle =  '#49ce05';
+    const coordinates = this.getCenterCoordinates(cell);
+    this.ctx.beginPath();
+    this.ctx.arc(coordinates[0], coordinates[1], this.cellSizePx / 6, 0, 2 * Math.PI);
+    this.ctx.fill();
+  }
 
+  private highlightCellPath(cell: Cell, direction: Direction) {
+    this.ctx.fillStyle =  '#49ce05';
+    const coordinates = this.getCoordinates(cell);
+    if (direction === 'Left') {
+      this.ctx.fillRect(coordinates[0], coordinates[1] + this.cellSizePx / 2 - this.cellSizePx / 6, this.cellSizePx / 2, this.cellSizePx / 3);
+    } else if (direction === 'Right') {
+      this.ctx.fillRect(coordinates[0] + this.cellSizePx / 2, coordinates[1] + this.cellSizePx / 2 - this.cellSizePx / 6, this.cellSizePx / 2, this.cellSizePx / 3);
+    } else if (direction === 'Up') {
+      this.ctx.fillRect(coordinates[0] + this.cellSizePx / 2 - this.cellSizePx / 6, coordinates[1], this.cellSizePx / 3, this.cellSizePx / 2);
+    } else {
+      this.ctx.fillRect(coordinates[0] + this.cellSizePx / 2 - this.cellSizePx / 6, coordinates[1] + this.cellSizePx / 2, this.cellSizePx / 3, this.cellSizePx / 2);
+    }
+  }
+
+  private drawSelectedCells() {
+    this.ctx.strokeStyle = '#000000';
+    this.ctx.fillStyle = "#297daf";
+    for (let i = 0; i < this.selectedCells.length; i++) {
+      const coordinates = this.getCenterCoordinates(this.selectedCells[i]);
+      this.ctx.lineWidth = 2;
+      this.ctx.beginPath();
+      this.ctx.arc(coordinates[0], coordinates[1], this.cellSizePx / 4, 0,  2 * Math.PI);
+      this.ctx.stroke();
+      this.ctx.fillText(String(i + 1),coordinates[0] - this.cellSizePx / 8, coordinates[1] + this.cellSizePx / 8);
+    }
+  }
+
+  private drawPath(path: Path) {
+    this.drawGrid();
+    for (const cell of path) {
+      this.highlightCellCenter(cell);
+    }
+    for (let i = 0; i < path.length; i++) {
+      if (i > 0) {
+        this.highlightCellPath(path[i], this.getDirection(path[i - 1].row - path[i].row, path[i - 1].col - path[i].col));
+      }
+      if (i < path.length - 1) {
+        this.highlightCellPath(path[i], this.getDirection(path[i + 1].row - path[i].row, path[i + 1].col - path[i].col));
+      }
+    }
+    for (const cell of path) {
+      this.highlightCell(cell);
+    }
+    this.drawSelectedCells();
+  }
+
+  private getCoordinates(cell: Cell): Coordinates {
+    return [
+      this.borderSizePx * (cell.row + 1) + cell.row * this.cellSizePx,
+      this.borderSizePx * (cell.col + 1) + cell.col * this.cellSizePx
+    ];
+  }
+
+  private getCenterCoordinates(cell: Cell): Coordinates {
+    const coordinates = this.getCoordinates(cell);
+    return [
+      coordinates[0] + this.cellSizePx / 2,
+      coordinates[1] + this.cellSizePx / 2
+    ];
+  }
+
+  private getDirection(xDiff: number, yDiff: number): Direction {
+   if (xDiff === 0) {
+     if (yDiff === -1) {
+       return 'Up';
+     } else {
+       return 'Down';
+     }
+   } else {
+     if (xDiff === -1) {
+       return 'Left';
+     } else {
+       return 'Right';
+     }
+   }
   }
 }

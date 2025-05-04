@@ -1,8 +1,9 @@
 @switch (applicationState) {
   @case ('Menu') {
-    <game-menu/>
+    <game-menu (gameOptions)="startGame($event)"/>
   }
   @case ('Game') {
-
+    <game [difficulty]="gameOptions.difficulty"
+          [enableWalls]="gameOptions.enableWalls"/>
   }
 }

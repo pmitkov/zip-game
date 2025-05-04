@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatFormField, MatLabel } from "@angular/material/input";
 import { MatSelect } from "@angular/material/select";
 import { MatOption } from "@angular/material/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatCheckbox } from "@angular/material/checkbox";
-import { Difficulty } from '../types';
+import { Difficulty, MenuOptions } from '../types';
 import { NgForOf } from "@angular/common";
 import { MatButton } from "@angular/material/button";
 
@@ -24,6 +24,9 @@ import { MatButton } from "@angular/material/button";
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent {
+  @Output()
+  gameOptions: EventEmitter<MenuOptions> = new EventEmitter<MenuOptions>();
+
   form: FormGroup;
 
   difficulties: Difficulty[] = [
@@ -35,12 +38,16 @@ export class MenuComponent {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      checkbox: [this.enableWalls],
-      select: [this.difficulties[0]]
+      difficulty: [this.difficulties[0]],
+      enableWalls: [this.enableWalls],
     });
   }
 
   startGame() {
-
+    console.log(this.form.value);
+    this.gameOptions.emit({
+      difficulty: this.form.value.difficulty,
+      enableWalls: this.form.value.enableWalls,
+    });
   }
 }

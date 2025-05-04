@@ -21,5 +21,6 @@ export type StopWatchState = 'Paused' | 'Running';
 export type ApplicationState = 'Menu' | 'Game';
 export type MenuOptions = {
   difficulty: Difficulty;
-
+  enableWalls: boolean;
 }
+export type Coordinates = Readonly<[number,number]>;

@@ -12,8 +12,8 @@ export class GameService {
   generateHamiltonianPath(rows: number, cols: number): Path {
     const visited: boolean[][] = new Array(rows)
       .fill(0).map(_ => new Array(cols).fill(false));
-    const x = this.randomService.getRandomInRange(0, rows + 1);
-    const y = this.randomService.getRandomInRange(0, cols + 1);
+    const x = this.randomService.getRandomInRange(0, rows);
+    const y = this.randomService.getRandomInRange(0, cols);
     const path: Path = [];
     this.backtrack({row: x, col: x}, visited, path);
     return path;

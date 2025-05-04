@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { StopwatchComponent } from '../stopwatch/stopwatch.component';
-import { Observable, Subject } from 'rxjs';
-import { GameState, StopWatchState } from '../types';
+import { interval, Observable, Subject } from 'rxjs';
+import { GameID, GameState, GameStatistics, StopWatchState } from '../types';
+import { GameStatisticsService } from '../services/game-statistics.service';
 
 @Component({
   selector: 'scoreboard',
@@ -13,19 +14,23 @@ import { GameState, StopWatchState } from '../types';
 })
 export class ScoreboardComponent implements OnInit {
   @Input({required: true})
-  moves!: number;
-
-  @Input({required: true})
-  backwardMoves!: number;
+  gameID!: GameID;
 
   @Input({required: true})
   gameStateChange!: Observable<GameState>;
 
-  stopWatchStateEmitter: Subject<StopWatchState> = new Subject<StopWatchState>();
+  stopWatchState: Subject<StopWatchState> = new Subject<StopWatchState>();
+  gameStatistics!: GameStatistics;
+
+  constructor(private gameStatisticsService: GameStatisticsService) { }
+
 
   ngOnInit(): void {
     this.gameStateChange.subscribe((gameState: GameState) => {
-      this.stopWatchStateEmitter.next(gameState);
-    })
+      this.stopWatchState.next(gameState === 'Running' ? 'Running' : 'Paused');
+    });
+    interval(5).subscribe(() =>{
+      this.gameStatistics = this.gameStatisticsService.getStatistics(this.gameID)!;
+    });
   }
 }

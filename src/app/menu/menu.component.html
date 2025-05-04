@@ -2,20 +2,22 @@
   <h1 class="title">Zip Game</h1>
   <div class="body">
       <form [formGroup]="form" (ngSubmit)="startGame()">
-          <div class="options">
+          <div class="menu-form">
+            <div class="options">
               <div class="difficulty-option">
-                  <mat-form-field appearance="fill" class="full-width">
-                      <mat-label>Select Difficulty</mat-label>
-                      <mat-select formControlName="difficulty">
-                          <mat-option *ngFor="let difficulty of difficulties" [value]="difficulty">
-                              {{ difficulty.size }}
-                          </mat-option>
-                      </mat-select>
-                  </mat-form-field>
+                <mat-form-field appearance="fill" class="full-width">
+                  <mat-label>Select Difficulty</mat-label>
+                  <mat-select formControlName="difficulty">
+                    <mat-option *ngFor="let difficulty of difficulties" [value]="difficulty">
+                      {{ difficulty.size }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
               <mat-checkbox formControlName="enableWalls">Enable Walls</mat-checkbox>
+            </div>
           </div>
-          <button mat-raised-button color="primary" type="submit">Start Game</button>
+          <button class="start-game-button" mat-flat-button color="primary" type="submit">Start Game</button>
       </form>
   </div>
 </div>

@@ -18,8 +18,11 @@ export class HomeComponent {
   gameOptions!: MenuOptions;
 
   startGame(options: MenuOptions) {
-    console.log(options);
     this.gameOptions = options;
     this.applicationState = 'Game';
+  }
+
+  showMenu() {
+    this.applicationState = 'Menu';
   }
 }

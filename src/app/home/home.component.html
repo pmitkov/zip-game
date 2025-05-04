@@ -1,9 +1,13 @@
-@switch (applicationState) {
-  @case ('Menu') {
-    <game-menu (gameOptions)="startGame($event)"/>
+<div class="application">
+  @switch (applicationState) {
+    @case ('Menu') {
+      <game-menu (gameOptions)="startGame($event)"/>
+    }
+    @case ('Game') {
+      <game [difficulty]="gameOptions.difficulty"
+            [enableWalls]="gameOptions.enableWalls"
+            (gameEnded)="showMenu()"/>
+    }
   }
-  @case ('Game') {
-    <game [difficulty]="gameOptions.difficulty"
-          [enableWalls]="gameOptions.enableWalls"/>
-  }
-}
+</div>
+

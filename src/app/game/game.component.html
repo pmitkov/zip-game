@@ -1,10 +1,10 @@
 <div class="game">
     <div class="game-controls">
-        <button mat-stroked-button>Clear</button>
-        <button mat-stroked-button (click)="toggleGameState()">
+        <button mat-flat-button [disabled]="gameState !== 'Running'" (click)="clearGame()">Clear</button>
+        <button mat-flat-button (click)="toggleGameState()">
             {{gameState === 'Running' ? 'Pause' : 'Resume'}}
         </button>
-        <button mat-stroked-button>Exit</button>
+        <button mat-flat-button (click)="handleGameEnded()">Exit</button>
     </div>
     <div class="game-grid">
         <game-grid [rows]="6"
@@ -12,11 +12,11 @@
                    [borderSizePx]="4"
                    [cellSizePx]="70"
                    [selectedCells]="selectedCells"
-                   [currentPath]="currentPathEmitter.asObservable()"/>
+                   [currentPath]="currentPathEmitter.asObservable()"
+                   [onGameOver]="gameOverEmitter.asObservable()"/>
     </div>
     <div class="statistics">
-        <scoreboard [moves]="15"
-                    [backwardMoves]="30"
+        <scoreboard [gameID]="gameID"
                     [gameStateChange]="gameStateEmitter.asObservable()"/>
     </div>
 </div>

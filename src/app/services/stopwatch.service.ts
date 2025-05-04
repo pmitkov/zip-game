@@ -1,23 +1,21 @@
 import { Injectable } from '@angular/core';
 import { StopWatchData, StopWatchID, StopWatchTime } from '../types';
+import { IdService } from './id.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StopwatchService {
   private stopWatchData: Map<StopWatchID, StopWatchData> = new Map();
-  private currentId: number = 1;
 
   constructor() { }
 
-  getNewStopWatch(): StopWatchID {
-    const stopWatchID = this.currentId.toString();
+  createStopWatch(stopWatchID: StopWatchID) {
     this.stopWatchData.set(stopWatchID, {
       isRunning: true,
       startTime: Date.now(),
       accumulatedTime: 0
     });
-    this.currentId++;
     return stopWatchID;
   }
 
@@ -52,6 +50,10 @@ export class StopwatchService {
     stopWatchData.isRunning = true;
     stopWatchData.startTime = Date.now();
     return true;
+  }
+
+  eraseStopWatch(id: StopWatchID): boolean {
+    return this.stopWatchData.delete(id);
   }
 
   resetStopWatch(id: StopWatchID) {

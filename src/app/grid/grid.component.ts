@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { Cell, Coordinates, Difficulty, Direction, Path } from '../types';
+import { Cell, Coordinates, Difficulty, Direction, GameStatistics, Path } from '../types';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -21,6 +21,8 @@ export class GridComponent implements AfterViewInit {
   selectedCells!: Cell[];
   @Input({required: true})
   currentPath!: Observable<Path>;
+  @Input({required: true})
+  onGameOver!: Observable<GameStatistics>
 
   private height!: number;
   private width!: number;
@@ -45,7 +47,10 @@ export class GridComponent implements AfterViewInit {
     this.highlightCell(this.selectedCells[0]);
     this.currentPath.subscribe(path => {
       this.drawPath(path);
-    })
+    });
+    this.onGameOver.subscribe(statistics => {
+      this.displayStatistics(statistics);
+    });
   }
 
   private drawGrid() {
@@ -160,5 +165,15 @@ export class GridComponent implements AfterViewInit {
        return 'Right';
      }
    }
+  }
+
+  private displayStatistics(statistics: GameStatistics) {
+    this.ctx.globalAlpha = 0.6
+    this.ctx.font = "70px Arial";
+    this.ctx.fillRect(0, 0, this.width, this.height);
+    this.ctx.globalAlpha = 1;
+    const coordinates = this.getCoordinates({row: 1, col: 1});
+    this.ctx.fillText(`Congratulations, you completed the game in ${statistics.time} seconds, ${statistics.moves} and ${statistics.backMoves} backward moves`,
+      coordinates[0], coordinates[1]);
   }
 }

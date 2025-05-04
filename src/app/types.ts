@@ -16,7 +16,7 @@ export type StopWatchData = {
   endTime?: number;
   accumulatedTime: number;
 }
-export type GameState = 'Paused' | 'Running';
+export type GameState = 'Paused' | 'Running' | 'Finished';
 export type StopWatchState = 'Paused' | 'Running';
 export type ApplicationState = 'Menu' | 'Game';
 export type MenuOptions = {
@@ -24,3 +24,10 @@ export type MenuOptions = {
   enableWalls: boolean;
 }
 export type Coordinates = Readonly<[number,number]>;
+export type GameStatistics = {
+  time: number;
+  moves: number;
+  backMoves: number;
+}
+export type GameID = string;
+export type ID = string;

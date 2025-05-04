@@ -1,6 +1,6 @@
 <div class="scoreboard">
   <div class="timer">
-    <stopwatch [stopWatchStateChange]="stopWatchStateEmitter.asObservable()"/>
+    <stopwatch [stopWatchStateChange]="stopWatchState.asObservable()"/>
   </div>
   <div class="moves">
     Moves: {{moves}}

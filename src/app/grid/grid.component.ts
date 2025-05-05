@@ -43,13 +43,9 @@ export class GridComponent implements AfterViewInit {
     canvas.height = this.height;
     canvas.width = this.width;
     this.ctx = canvas.getContext('2d')!;
-    this.ctx.font = "25px Arial";
-    this.drawGrid();
-    this.drawSelectedCells();
-    this.highlightCell(this.selectedCells[0]);
-    if (this.walls) {
-      this.drawWalls();
-    }
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
+    this.drawPath([this.selectedCells[0]]);
     this.currentPath.subscribe(path => {
       this.drawPath(path);
     });
@@ -114,6 +110,7 @@ export class GridComponent implements AfterViewInit {
   }
 
   private drawSelectedCells() {
+    this.ctx.font = "25px Arial";
     this.ctx.strokeStyle = '#000000';
     this.ctx.fillStyle = "#297daf";
     for (let i = 0; i < this.selectedCells.length; i++) {
@@ -122,7 +119,7 @@ export class GridComponent implements AfterViewInit {
       this.ctx.beginPath();
       this.ctx.arc(coordinates[0], coordinates[1], this.cellSizePx / 4, 0,  2 * Math.PI);
       this.ctx.stroke();
-      this.ctx.fillText(String(i + 1),coordinates[0] - this.cellSizePx / 8, coordinates[1] + this.cellSizePx / 8);
+      this.ctx.fillText(String(i + 1), coordinates[0], coordinates[1], this.cellSizePx / 2);
     }
   }
 
@@ -180,13 +177,10 @@ export class GridComponent implements AfterViewInit {
   }
 
   private displayStatistics(statistics: GameStatistics) {
-    this.ctx.globalAlpha = 0.6
-    this.ctx.font = "50px Arial";
-    this.ctx.fillRect(0, 0, this.width, this.height);
+    this.ctx.font = "75px Arial";
+    this.ctx.fillStyle = '#ffffff';
     this.ctx.globalAlpha = 1;
-    const coordinates = this.getCoordinates({row: 1, col: 1});
-    this.ctx.fillText(`Congratulations, you completed the game in ${statistics.time} seconds, ${statistics.moves} and ${statistics.backMoves} backward moves`,
-      coordinates[0], coordinates[1], this.width);
+    this.ctx.fillText('Congratulations!', this.width / 2, this.height / 2, this.width);
   }
 
   private drawWalls() {

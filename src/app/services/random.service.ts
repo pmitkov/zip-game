@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CoinToss } from '../types';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class RandomService {
     return Math.floor(Math.random() * (max - min) + min);
   }
 
-  tossCoin(): boolean {
+  tossCoin(): CoinToss {
     return this.getRandomInRange(0, 2) === 0;
   }
 

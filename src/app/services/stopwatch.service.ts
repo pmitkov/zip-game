@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { StopWatchData, StopWatchID, StopWatchTime } from '../types';
-import { IdService } from './id.service';
 
 @Injectable({
   providedIn: 'root'

@@ -33,3 +33,6 @@ export type GameStatistics = {
 export type GameID = string;
 export type ID = string;
 export type Wall = Readonly<[Cell, Cell]>;
+export type Heads = true;
+export type Tails = false;
+export type CoinToss = Heads | Tails;

@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Cell, Coordinates, Direction, GameStatistics, Path, Wall } from '../types';
 import { Observable } from 'rxjs';
+import { TimeFormat } from '../pipes/time-format';
 
 @Component({
   selector: 'game-grid',
@@ -34,7 +35,7 @@ export class GridComponent implements AfterViewInit {
 
   private ctx!: CanvasRenderingContext2D;
 
-  constructor() { }
+  constructor(private timeFormat: TimeFormat) { }
 
   ngAfterViewInit(): void {
     this.height = this.rows * this.cellSizePx + this.borderSizePx * (this.rows + 1);
@@ -178,9 +179,13 @@ export class GridComponent implements AfterViewInit {
 
   private displayStatistics(statistics: GameStatistics) {
     this.ctx.font = "75px Arial";
-    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillStyle = '#000000';
+    this.ctx.globalAlpha = 0.6;
+    this.ctx.fillRect(0, 0, this.width, this.height);
     this.ctx.globalAlpha = 1;
-    this.ctx.fillText('Congratulations!', this.width / 2, this.height / 2, this.width);
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillText('Congratulations!', this.width / 2, this.height / 4, this.width);
+    this.ctx.fillText("Time: " + this.timeFormat.transform(statistics.time), this.width / 2, this.height / 2, this.width);
   }
 
   private drawWalls() {

@@ -3,11 +3,13 @@ import { GameID, GameStatistics } from '../types';
 import { interval } from 'rxjs';
 import { GameStatisticsService } from '../services/game-statistics.service';
 import { DecimalPipe } from '@angular/common';
+import { TimeFormat } from '../pipes/time-format';
 
 @Component({
   selector: 'stopwatch',
   imports: [
-    DecimalPipe
+    DecimalPipe,
+    TimeFormat
   ],
   templateUrl: './stopwatch.component.html',
   styleUrl: './stopwatch.component.scss'

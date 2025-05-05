@@ -1,3 +1,3 @@
 <div class="stopwatch">
-  Elapsed time: {{Math.floor(gameStatistics.time / 1000)}}:{{gameStatistics.time % 1000 }}
+  Elapsed time: {{ gameStatistics.time | timeFormat }}
 </div>

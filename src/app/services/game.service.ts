@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Cell, Path } from '../types';
+import { Cell, Path, Wall } from '../types';
 import { RandomService } from './random.service';
+import _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,45 @@ export class GameService {
     }
     selectedCells.push(path.at(-1)!);
     return selectedCells;
+  }
+
+  generateWalls(path: Path, rows: number, cols: number, wallsCount: number): Wall[] {
+    const walls: Wall[] = [];
+    while (wallsCount > 0) {
+      const row = this.randomService.getRandomInRange(0, rows - 1);
+      const col = this.randomService.getRandomInRange(0, cols - 1);
+      const cell = {row: row, col: col};
+      let adjCell: Cell;
+      if (this.randomService.tossCoin()) {
+        adjCell = {row: row + 1, col: col};
+      } else {
+        adjCell = {row: row, col: col + 1};
+      }
+      let canAdd = true;
+      // check if wall passes through the path
+      for (let idx = 0; idx < path.length - 1; idx++) {
+        if ((_.isEqual(cell, path[idx]) && _.isEqual(adjCell, path[idx + 1])) ||
+            ((_.isEqual(adjCell, path[idx]) && _.isEqual(cell, path[idx + 1])))) {
+          canAdd = false;
+          break;
+        }
+      }
+      // check if wall has already been added
+      if (canAdd) {
+        for (const wall of walls) {
+          if ((_.isEqual(cell, wall[0]) && _.isEqual(adjCell, wall[1])) ||
+            (_.isEqual(adjCell, wall[0]) && _.isEqual(cell, wall[1]))) {
+            canAdd = false;
+            break;
+          }
+        }
+      }
+      if (canAdd) {
+        wallsCount--;
+        walls.push([cell, adjCell]);
+      }
+    }
+    return walls;
   }
 
   private backtrack(cell: Cell, visited: boolean[][], path: Path): boolean {

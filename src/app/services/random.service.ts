@@ -11,6 +11,10 @@ export class RandomService {
     return Math.floor(Math.random() * (max - min) + min);
   }
 
+  tossCoin(): boolean {
+    return this.getRandomInRange(0, 2) === 0;
+  }
+
   randomSubset(setSize: number, subsetSize: number): number[] {
     const indexes: number[] = [];
     for (let i = 0; i < setSize; i++) {

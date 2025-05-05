@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { Cell, Coordinates, Difficulty, Direction, GameStatistics, Path } from '../types';
+import { Cell, Coordinates, Direction, GameStatistics, Path, Wall } from '../types';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -23,6 +23,8 @@ export class GridComponent implements AfterViewInit {
   currentPath!: Observable<Path>;
   @Input({required: true})
   onGameOver!: Observable<GameStatistics>
+  @Input()
+  walls?: Wall[];
 
   private height!: number;
   private width!: number;
@@ -45,6 +47,9 @@ export class GridComponent implements AfterViewInit {
     this.drawGrid();
     this.drawSelectedCells();
     this.highlightCell(this.selectedCells[0]);
+    if (this.walls) {
+      this.drawWalls();
+    }
     this.currentPath.subscribe(path => {
       this.drawPath(path);
     });
@@ -94,13 +99,17 @@ export class GridComponent implements AfterViewInit {
     this.ctx.fillStyle =  '#49ce05';
     const coordinates = this.getCoordinates(cell);
     if (direction === 'Left') {
-      this.ctx.fillRect(coordinates[0], coordinates[1] + this.cellSizePx / 2 - this.cellSizePx / 6, this.cellSizePx / 2, this.cellSizePx / 3);
+      this.ctx.fillRect(coordinates[0] + this.cellSizePx / 2 - this.cellSizePx / 6, coordinates[1],
+        this.cellSizePx / 3, this.cellSizePx / 2);
     } else if (direction === 'Right') {
-      this.ctx.fillRect(coordinates[0] + this.cellSizePx / 2, coordinates[1] + this.cellSizePx / 2 - this.cellSizePx / 6, this.cellSizePx / 2, this.cellSizePx / 3);
+      this.ctx.fillRect(coordinates[0] + this.cellSizePx / 2 - this.cellSizePx / 6, coordinates[1] + this.cellSizePx / 2,
+        this.cellSizePx / 3, this.cellSizePx / 2);
     } else if (direction === 'Up') {
-      this.ctx.fillRect(coordinates[0] + this.cellSizePx / 2 - this.cellSizePx / 6, coordinates[1], this.cellSizePx / 3, this.cellSizePx / 2);
+      this.ctx.fillRect(coordinates[0], coordinates[1] + this.cellSizePx / 2 - this.cellSizePx / 6,
+        this.cellSizePx / 2, this.cellSizePx / 3);
     } else {
-      this.ctx.fillRect(coordinates[0] + this.cellSizePx / 2 - this.cellSizePx / 6, coordinates[1] + this.cellSizePx / 2, this.cellSizePx / 3, this.cellSizePx / 2);
+      this.ctx.fillRect(coordinates[0] + this.cellSizePx / 2, coordinates[1] + this.cellSizePx / 2 - this.cellSizePx / 6,
+        this.cellSizePx / 2, this.cellSizePx / 3);
     }
   }
 
@@ -119,6 +128,9 @@ export class GridComponent implements AfterViewInit {
 
   private drawPath(path: Path) {
     this.drawGrid();
+    if (this.walls) {
+      this.drawWalls();
+    }
     for (const cell of path) {
       this.highlightCellCenter(cell);
     }
@@ -138,8 +150,8 @@ export class GridComponent implements AfterViewInit {
 
   private getCoordinates(cell: Cell): Coordinates {
     return [
-      this.borderSizePx * (cell.row + 1) + cell.row * this.cellSizePx,
-      this.borderSizePx * (cell.col + 1) + cell.col * this.cellSizePx
+      this.borderSizePx * (cell.col + 1) + cell.col * this.cellSizePx,
+      this.borderSizePx * (cell.row + 1) + cell.row * this.cellSizePx
     ];
   }
 
@@ -169,11 +181,30 @@ export class GridComponent implements AfterViewInit {
 
   private displayStatistics(statistics: GameStatistics) {
     this.ctx.globalAlpha = 0.6
-    this.ctx.font = "70px Arial";
+    this.ctx.font = "50px Arial";
     this.ctx.fillRect(0, 0, this.width, this.height);
     this.ctx.globalAlpha = 1;
     const coordinates = this.getCoordinates({row: 1, col: 1});
     this.ctx.fillText(`Congratulations, you completed the game in ${statistics.time} seconds, ${statistics.moves} and ${statistics.backMoves} backward moves`,
-      coordinates[0], coordinates[1]);
+      coordinates[0], coordinates[1], this.width);
+  }
+
+  private drawWalls() {
+    this.ctx.strokeStyle = '#8d0479';
+    this.ctx.lineWidth = 2 * this.borderSizePx;
+    for (const wall of this.walls!) {
+      const coordinates = this.getCoordinates(wall[1]);
+      if (this.getDirection(wall[1].row - wall[0].row, wall[1].col - wall[0].col) === 'Right') {
+        this.ctx.beginPath();
+        this.ctx.moveTo(coordinates[0], coordinates[1]);
+        this.ctx.lineTo(coordinates[0] + this.cellSizePx, coordinates[1]);
+        this.ctx.stroke();
+      } else {
+        this.ctx.beginPath();
+        this.ctx.moveTo(coordinates[0], coordinates[1]);
+        this.ctx.lineTo(coordinates[0], coordinates[1] + this.cellSizePx);
+        this.ctx.stroke();
+      }
+    }
   }
 }

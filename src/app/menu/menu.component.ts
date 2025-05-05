@@ -30,9 +30,9 @@ export class MenuComponent {
   form: FormGroup;
 
   difficulties: Difficulty[] = [
-    {size: '6x6', rows: 6, cols: 6, nodes: 10},
-    {size: '8x8', rows: 8, cols: 8, nodes: 15},
-    {size: '10x10', rows: 10, cols: 10, nodes: 20},
+    {size: '6x6', rows: 6, cols: 6, nodes: 10, walls: 10},
+    {size: '8x8', rows: 8, cols: 8, nodes: 15, walls: 15},
+    {size: '10x10', rows: 10, cols: 10, nodes: 20, walls: 20},
   ];
   enableWalls: boolean = false;
 
@@ -44,7 +44,6 @@ export class MenuComponent {
   }
 
   startGame() {
-    console.log(this.form.value);
     this.gameOptions.emit({
       difficulty: this.form.value.difficulty,
       enableWalls: this.form.value.enableWalls,

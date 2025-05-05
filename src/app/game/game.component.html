@@ -1,7 +1,7 @@
 <div class="game">
     <div class="game-controls">
         <button mat-flat-button [disabled]="gameState !== 'Running'" (click)="clearGame()">Clear</button>
-        <button mat-flat-button (click)="toggleGameState()">
+        <button mat-flat-button [disabled]="gameState === 'Finished'" (click)="toggleGameState()">
             {{gameState === 'Running' ? 'Pause' : 'Resume'}}
         </button>
         <button mat-flat-button (click)="handleGameEnded()">Exit</button>
@@ -13,11 +13,11 @@
                    [cellSizePx]="70"
                    [selectedCells]="selectedCells"
                    [currentPath]="currentPathEmitter.asObservable()"
-                   [onGameOver]="gameOverEmitter.asObservable()"/>
+                   [onGameOver]="gameOverEmitter.asObservable()"
+                   [walls]="walls"/>
     </div>
     <div class="statistics">
-        <scoreboard [gameID]="gameID"
-                    [gameStateChange]="gameStateEmitter.asObservable()"/>
+        <scoreboard [gameID]="gameID"/>
     </div>
 </div>
 

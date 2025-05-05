@@ -3,6 +3,7 @@ export type Difficulty = {
   rows: number;
   cols: number;
   nodes: number;
+  walls: number;
 };
 export type Cell = Readonly<{row: number, col: number}>;
 export type Direction = 'Left' | 'Right' | 'Up' | 'Down';
@@ -31,3 +32,4 @@ export type GameStatistics = {
 }
 export type GameID = string;
 export type ID = string;
+export type Wall = Readonly<[Cell, Cell]>;

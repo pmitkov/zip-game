@@ -32,7 +32,9 @@ export class GameStatisticsService {
   }
 
   getStatistics(gameID: GameID) : GameStatistics | undefined {
-    return this.statistics.get(gameID);
+    const statistics = this.statistics.get(gameID)!;
+    statistics.time = this.stopWatchService.getStopWatch(gameID)!;
+    return statistics;
   }
 
   closeGame(gameID: GameID): boolean {

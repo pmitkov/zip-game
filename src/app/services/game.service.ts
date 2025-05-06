@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Cell, Path, Wall } from '../types';
+import { Cell, Direction, directions, Path, Wall } from '../types';
 import { RandomService } from './random.service';
 import _ from 'lodash';
+import { moves } from '../moves';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class GameService {
     if (rows * cols <= 36) {
       return this.generateHamiltonianPathBacktracking(rows, cols);
     } else {
-     return this.generateHamiltonianPathZigZag(rows, cols);
+     return this.generateHamiltonianPathZigZag(rows, cols, this.randomService.getRandomInRange(500, 1000));
     }
   }
 
@@ -67,6 +68,22 @@ export class GameService {
     return walls;
   }
 
+  getDirection(xDiff: number, yDiff: number): Direction {
+    if (xDiff === 0) {
+      if (yDiff === -1) {
+        return 'Up';
+      } else {
+        return 'Down';
+      }
+    } else {
+      if (xDiff === -1) {
+        return 'Left';
+      } else {
+        return 'Right';
+      }
+    }
+  }
+
   private backtrack(cell: Cell, visited: boolean[][], path: Path): boolean {
     path.push(cell);
     visited[cell.row][cell.col] = true;
@@ -78,8 +95,7 @@ export class GameService {
     for (let dir of dirs) {
       const nextRow = cell.row + dir[0];
       const nextCol = cell.col + dir[1];
-      if (nextRow >= 0 && nextCol >= 0 && nextRow < visited.length &&
-        nextCol < visited[0].length && !visited[nextRow][nextCol] &&
+      if (this.isValid({row: nextRow, col: nextCol}, visited.length, visited[0].length) && !visited[nextRow][nextCol] &&
         this.backtrack({row: nextRow, col: nextCol}, visited, path)) {
         return true;
       }
@@ -99,7 +115,53 @@ export class GameService {
     return path;
   }
 
-  private generateHamiltonianPathZigZag(rows: number, cols: number): Path {
-    throw new Error("Method not implemented.");
+  private generateHamiltonianPathZigZag(rows: number, cols: number, iterations: number): Path {
+    let path: Path = [];
+    // generate the zig zag path
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        if (row % 2 == 0) {
+          path.push({row: row, col : col});
+        } else {
+          path.push({row: row, col: cols - 1 - col});
+        }
+      }
+    }
+    // repeat the backbite procedure a fixed number of times
+    while (iterations--) {
+      if (this.randomService.tossCoin()) {
+        path.reverse();
+      }
+      // choose the first cell
+      const cell = this.randomService.randomElement(this.getAdj(path, path[0], rows, cols));
+      if (this.adjInPath(path[0], cell, path)) {
+        continue;
+      }
+      const idx = _.findIndex(path, cell);
+      const newPath = path.slice(0, idx);
+      newPath.reverse();
+      newPath.push(...path.slice(idx));
+      path = newPath;
+    }
+    return path;
+  }
+
+  private getAdj(path: Path, cell: Cell, rows: number, cols: number): Cell[] {
+    const row = cell.row;
+    const col = cell.col;
+    return directions
+      .map(dir => moves[dir])
+      .map(move => {
+        return {row: row + move[0], col: col + move[1]}
+      })
+      .filter(cell => this.isValid(cell, rows, cols));
+  }
+
+  private adjInPath(cell1: Cell, cell2: Cell, path: Path): boolean {
+    return Math.abs(_.findIndex(path, cell1) - _.findIndex(path, cell2)) === 1;
+  }
+
+  isValid(cell: Cell, rows: number, cols: number): boolean {
+    return cell.row >= 0 && cell.col >= 0 && cell.row < rows && cell.col < cols;
   }
 }

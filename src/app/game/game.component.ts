@@ -7,6 +7,7 @@ import { ScoreboardComponent } from "../scoreboard/scoreboard.component";
 import { Subject } from "rxjs";
 import { GameStatisticsService } from '../services/game-statistics.service';
 import _ from 'lodash';
+import { moves } from '../moves';
 
 @Component({
   selector: 'game',
@@ -42,12 +43,6 @@ export class GameComponent implements OnInit {
   selectedCells!: Cell[];
   visited!: boolean[][];
   walls: Wall[] | undefined;
-  private readonly moves: {[key in Direction]: [number, number]} = {
-    'Up': [-1, 0],
-    'Down': [1, 0],
-    'Left': [0, -1],
-    'Right': [0, 1],
-  };
 
   constructor(private gameService: GameService,
               private gameStatisticsService: GameStatisticsService) {
@@ -100,9 +95,9 @@ export class GameComponent implements OnInit {
   }
 
   private handleKeyPress(direction: Direction) {
-    const row = this.currentPath.at(-1)!.row + this.moves[direction][0];
-    const col = this.currentPath.at(-1)!.col + this.moves[direction][1];
-    if (row >= 0 && col >= 0 && row < this.rows && col < this.cols) {
+    const row = this.currentPath.at(-1)!.row + moves[direction][0];
+    const col = this.currentPath.at(-1)!.col + moves[direction][1];
+    if (this.gameService.isValid({row: row, col: col}, this.rows, this.cols)) {
       if (this.enableWalls && this.hasWall(this.currentPath.at(-1)!, {row: row, col: col})) {
         return;
       }
@@ -117,7 +112,9 @@ export class GameComponent implements OnInit {
         this.gameStatisticsService.incrementMoves(this.gameID);
         this.currentPathEmitter.next(this.currentPath);
       }
-      if (this.currentPath.length === this.rows * this.cols && this.verifyVisitedOrder()) {
+      if (this.currentPath.length === this.rows * this.cols &&
+          _.isEqual(this.currentPath.at(-1), this.selectedCells.at(-1)) &&
+          this.verifyVisitedOrder()) {
         this.gameState = 'Finished';
         this.gameStatisticsService.pauseGame(this.gameID);
         this.gameOverEmitter.next(this.gameStatisticsService.getStatistics(this.gameID)!);

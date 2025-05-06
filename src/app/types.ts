@@ -6,7 +6,8 @@ export type Difficulty = {
   walls: number;
 };
 export type Cell = Readonly<{row: number, col: number}>;
-export type Direction = 'Left' | 'Right' | 'Up' | 'Down';
+export const directions = ['Left', 'Right', 'Up', 'Down'] as const;
+export type Direction = typeof directions[number];
 export type Path = Cell[];
 export type Matrix = number[][];
 export type StopWatchID = string;

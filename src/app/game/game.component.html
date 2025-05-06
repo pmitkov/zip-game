@@ -1,14 +1,14 @@
 <div class="game">
     <div class="game-controls">
-        <button mat-flat-button [disabled]="gameState !== 'Running'" (click)="clearGame()">Clear</button>
+        <button mat-flat-button [disabled]="gameState !== 'Running' || currentPath.length === 1" (click)="clearGame()">Clear</button>
         <button mat-flat-button [disabled]="gameState === 'Finished'" (click)="toggleGameState()">
             {{gameState === 'Running' ? 'Pause' : 'Resume'}}
         </button>
         <button mat-flat-button (click)="handleGameEnded()">Exit</button>
     </div>
     <div class="game-grid">
-        <game-grid [rows]="6"
-                   [cols]="6"
+        <game-grid [rows]="rows"
+                   [cols]="cols"
                    [borderSizePx]="4"
                    [cellSizePx]="70"
                    [selectedCells]="selectedCells"

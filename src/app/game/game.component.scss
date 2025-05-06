@@ -1,11 +1,18 @@
 .game {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  width: max-content;
 }
 
 .game-controls {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.game-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

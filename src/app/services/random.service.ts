@@ -35,12 +35,16 @@ export class RandomService {
     return subsetIndexes;
   }
 
-  shuffleArray(arr: any) {
+  shuffleArray<T>(arr: T[]) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       const temp = arr[i];
       arr[i] = arr[j];
       arr[j] = temp;
     }
+  }
+
+  randomElement<T>(arr: T[]): T {
+    return arr[this.getRandomInRange(0, arr.length)];
   }
 }

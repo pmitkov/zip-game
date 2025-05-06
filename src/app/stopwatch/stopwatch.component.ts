@@ -2,13 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { GameID, GameStatistics } from '../types';
 import { interval } from 'rxjs';
 import { GameStatisticsService } from '../services/game-statistics.service';
-import { DecimalPipe } from '@angular/common';
 import { TimeFormat } from '../pipes/time-format';
 
 @Component({
   selector: 'stopwatch',
   imports: [
-    DecimalPipe,
     TimeFormat
   ],
   templateUrl: './stopwatch.component.html',
@@ -18,12 +16,9 @@ export class StopwatchComponent implements OnInit {
   @Input({required: true})
   gameID!: GameID;
 
-  protected readonly Math = Math;
   protected gameStatistics!: GameStatistics;
 
-  constructor (private gameStatisticsService: GameStatisticsService) {
-
-  }
+  constructor (private gameStatisticsService: GameStatisticsService) {}
 
   ngOnInit(): void {
     this.gameStatistics = this.gameStatisticsService.getStatistics(this.gameID)!;

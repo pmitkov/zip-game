@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular
 import { Cell, Coordinates, Direction, GameStatistics, Path, Wall } from '../types';
 import { Observable } from 'rxjs';
 import { TimeFormat } from '../pipes/time-format';
+import { GameService } from '../services/game.service';
 
 @Component({
   selector: 'game-grid',
@@ -35,7 +36,8 @@ export class GridComponent implements AfterViewInit {
 
   private ctx!: CanvasRenderingContext2D;
 
-  constructor(private timeFormat: TimeFormat) { }
+  constructor(private timeFormat: TimeFormat,
+              private gameService: GameService) { }
 
   ngAfterViewInit(): void {
     this.height = this.rows * this.cellSizePx + this.borderSizePx * (this.rows + 1);
@@ -134,10 +136,12 @@ export class GridComponent implements AfterViewInit {
     }
     for (let i = 0; i < path.length; i++) {
       if (i > 0) {
-        this.highlightCellPath(path[i], this.getDirection(path[i - 1].row - path[i].row, path[i - 1].col - path[i].col));
+        this.highlightCellPath(path[i], this.gameService
+          .getDirection(path[i - 1].row - path[i].row, path[i - 1].col - path[i].col));
       }
       if (i < path.length - 1) {
-        this.highlightCellPath(path[i], this.getDirection(path[i + 1].row - path[i].row, path[i + 1].col - path[i].col));
+        this.highlightCellPath(path[i], this.gameService
+          .getDirection(path[i + 1].row - path[i].row, path[i + 1].col - path[i].col));
       }
     }
     for (const cell of path) {
@@ -161,22 +165,6 @@ export class GridComponent implements AfterViewInit {
     ];
   }
 
-  private getDirection(xDiff: number, yDiff: number): Direction {
-   if (xDiff === 0) {
-     if (yDiff === -1) {
-       return 'Up';
-     } else {
-       return 'Down';
-     }
-   } else {
-     if (xDiff === -1) {
-       return 'Left';
-     } else {
-       return 'Right';
-     }
-   }
-  }
-
   private displayStatistics(statistics: GameStatistics) {
     this.ctx.font = "75px Arial";
     this.ctx.fillStyle = '#000000';
@@ -193,7 +181,7 @@ export class GridComponent implements AfterViewInit {
     this.ctx.lineWidth = 2 * this.borderSizePx;
     for (const wall of this.walls!) {
       const coordinates = this.getCoordinates(wall[1]);
-      if (this.getDirection(wall[1].row - wall[0].row, wall[1].col - wall[0].col) === 'Right') {
+      if (this.gameService.getDirection(wall[1].row - wall[0].row, wall[1].col - wall[0].col) === 'Right') {
         this.ctx.beginPath();
         this.ctx.moveTo(coordinates[0], coordinates[1]);
         this.ctx.lineTo(coordinates[0] + this.cellSizePx, coordinates[1]);

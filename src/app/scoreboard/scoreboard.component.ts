@@ -25,5 +25,5 @@ export class ScoreboardComponent implements OnInit {
     interval(5).subscribe(() =>{
       this.gameStatistics = this.gameStatisticsService.getStatistics(this.gameID)!;
     });
-    }
+  }
 }

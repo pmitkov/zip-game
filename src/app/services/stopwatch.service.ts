@@ -60,6 +60,6 @@ export class StopwatchService {
       isRunning: true,
       startTime: Date.now(),
       accumulatedTime: 0
-    })
+    });
   }
 }

@@ -1,13 +1,18 @@
 {
   "name": "zip-game",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "main": "dist/main.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "electron": "ng build && electron .",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "build-zip-game": "ng build",
+    "build-electron": "tsc --project electron/tsconfig.json",
+    "watch-zip-game": "ng build --watch --configuration development",
+    "wait-for-serve-zip-game": "wait-on http://localhost:4200",
+    "serve-zip-game": "ng serve zip-game",
+    "start": "concurrently \"npm build-electron\" \"npm run serve-zip-game\" \"npm run wait-for-serve-zip-game && electron-forge start\"",
+    "package": "npm  build-electron && npm build-zip-game && electron-forge package",
+    "make": "npm  build-electron && npm build-zip-game && electron-forge make",
+    "publish-app": "npm  build-electron && npm build-zip-game && electron-forge publish"
   },
   "private": true,
   "dependencies": {
@@ -20,7 +25,7 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
-    "assert": "^2.1.0",
+    "electron-squirrel-startup": "^1.0.1",
     "lodash": "^4.17.21",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
@@ -30,9 +35,16 @@
     "@angular-devkit/build-angular": "^19.2.5",
     "@angular/cli": "^19.2.5",
     "@angular/compiler-cli": "^19.2.0",
+    "@electron-forge/cli": "^7.8.0",
+    "@electron-forge/maker-deb": "^7.8.0",
+    "@electron-forge/maker-rpm": "^7.8.0",
+    "@electron-forge/maker-squirrel": "^7.8.0",
+    "@electron-forge/maker-zip": "^7.8.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.8.0",
     "@types/electron": "^1.4.38",
     "@types/jasmine": "~5.1.0",
     "@types/lodash": "^4.17.16",
+    "concurrently": "^9.1.2",
     "electron": "^36.1.0",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
@@ -40,6 +52,9 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.7.2"
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.7.2",
+    "wait-on": "^8.0.3"
   }
 }

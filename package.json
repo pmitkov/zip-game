@@ -10,9 +10,9 @@
     "wait-for-serve-zip-game": "wait-on http://localhost:4200",
     "serve-zip-game": "ng serve zip-game",
     "start": "concurrently \"npm build-electron\" \"npm run serve-zip-game\" \"npm run wait-for-serve-zip-game && electron-forge start\"",
-    "package": "npm  build-electron && npm build-zip-game && electron-forge package",
-    "make": "npm  build-electron && npm build-zip-game && electron-forge make",
-    "publish-app": "npm  build-electron && npm build-zip-game && electron-forge publish"
+    "package": "npm run build-electron && npm run build-zip-game && electron-forge package",
+    "make": "npm run build-electron && npm run build-zip-game && electron-forge make",
+    "publish-app": "npm run build-electron && npm run build-zip-game && electron-forge publish"
   },
   "private": true,
   "dependencies": {
